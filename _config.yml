@@ -1,10 +1,10 @@
 # Site settings
-title: Autumn Blog
-SEOTitle: 邱峰的博客 | Autumn Blog
+title: Autu Blog
+SEOTitle: 邱峰的博客 | Autu Blog
 header-img: img/home-bg.jpg
 email: AutumnQFeng@163.com
-description: "关于程序与设计、黑客与画家 | 邱峰，Web & Mobile Lover，Software Engineer，UX Designer | 这里是 @Autumn邱峰 的个人博客，与你一起发现更大的世界。"
-keyword: "邱峰, Autumn邱峰, Autumn, 鬼栈, Autumnpro, @Autumnpro, 邱峰的博客, Autumn Blog, 博客, 个人网站, 互联网, Web, JavaScript, 前端, 设计"
+description: "关于程序与设计、黑客与画家 | 邱峰，Web & Mobile Lover，Software Engineer，UX Designer | 这里是 @Autu邱峰 的个人博客，与你一起发现更大的世界。"
+keyword: "邱峰, Autu邱峰, Autu, 鬼栈, Autupro, @Autupro, 邱峰的博客, Autu Blog, 博客, 个人网站, 互联网, Web, JavaScript, 前端, 设计"
 url: "http://autumn200.com/"              # your host, for absolute URL
 baseurl: ""                             # for example, '/blog' if your blog hosted on 'host/blog'
 
@@ -13,10 +13,10 @@ future: true
 
 # SNS settings
 RSS: false
-weibo_username:     huxpro
-zhihu_username:     huxpro
-github_username:    huxpro
-twitter_username:   huxpro
+weibo_username:     Autupro
+zhihu_username:     Autupro
+github_username:    Autupro
+twitter_username:   Autupro
 #facebook_username:  huxpro
 #linkedin_username:  firstname-lastname-idxxxx
 
@@ -59,7 +59,7 @@ kramdown:
 
 
 # Disqus settings
-disqus_username: hux
+disqus_username: Autupro
 
 # Netease settings
 netease_comment: false
