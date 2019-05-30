@@ -14,7 +14,7 @@ future: true
 # SNS settings
 RSS: false
 weibo_username:     Autupro
-zhihu_username:     www.zhihu.com/people/autumn-18-56/activities
+zhihu_username:     zhihu.com/people/autumn-18-56/activities
 github_username:    AutumnQFeng
 twitter_username:   Autupro
 #facebook_username:  huxpro
