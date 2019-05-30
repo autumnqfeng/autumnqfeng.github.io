@@ -13,12 +13,12 @@ future: true
 
 # SNS settings
 RSS: false
-weibo_username:     Autupro
+weibo_username:     AutumnQFeng
 zhihu_username:     autumn-18-56/activities
 github_username:    AutumnQFeng
 #twitter_username:   Autupro
 #facebook_username:  huxpro
-linkedin_username:  firstname-lastname-idxxxx
+#linkedin_username:  firstname-lastname-idxxxx
 
 
 
