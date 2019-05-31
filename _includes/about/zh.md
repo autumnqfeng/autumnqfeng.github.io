@@ -7,7 +7,6 @@ Hey，我是邱峰，病毒种，进化程度不明，多出没于[博客](http:
 
 一些作品和开源软件项目，👉 戳 [Portfolio](/portfolio)、[Github](https://github.com/AutumnQFeng)。 
 
-<br>
 
 ##### Talks
 - Building Progressive Web Apps · [CSDI 广州 2017]
@@ -15,7 +14,7 @@ Hey，我是邱峰，病毒种，进化程度不明，多出没于[博客](http:
 
 <br>
 
-友情链接请留言。格式要求如下
+友情链接请留言。格式要求如下：
 
 - 网站名称：Autu
 - 网站链接：www.autumn200.com
