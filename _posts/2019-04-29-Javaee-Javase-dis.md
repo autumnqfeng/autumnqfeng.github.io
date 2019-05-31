@@ -6,6 +6,7 @@ author: "Autu"
 header-style: text
 tags:
   - Java基础
+  - JDK
 ---
 
 ### javaME，javaSE和javaEE是什么
@@ -13,12 +14,12 @@ tags:
 ---
 
 ①Java SE：标准版Java SE（Java Platform，Standard Edition）。JavaSE以前成为J2SE。 
-<font color="red">**它语序开发和部署在桌面，服务器，嵌入式环境和实时环境中使用Java应用程序。**</font>
+<font color="red"> **它语序开发和部署在桌面，服务器，嵌入式环境和实时环境中使用Java应用程序。** </font>
 JavaSE包含了支持JavaWeb服务的开发的类，并为Java Platform,Enterprise Edition(Java EE)提供了基础。
 
-②Java EE：企业版Java EE（Java Platform，Enterprise Edition）。这个版本以前成为J2EE。<font color="red">**企业版本帮助开发和部署可移植，健壮，可伸缩切安全的服务器端Java应用程序。**</font>
+②Java EE：企业版Java EE（Java Platform，Enterprise Edition）。这个版本以前成为J2EE。<font color="red"> **企业版本帮助开发和部署可移植，健壮，可伸缩切安全的服务器端Java应用程序。** </font>
 
-③Java ME：微型版Java ME（Java Platform，Micro Edition）。这个版本以前称为J2ME。<font color="red">**Java ME为在移动设备和嵌入式设备（笔记手机，PDA，电视机顶盒和打印机）上运行的应用程序提供一个健壮且灵活的环境。**</font>
+③Java ME：微型版Java ME（Java Platform，Micro Edition）。这个版本以前称为J2ME。<font color="red"> **Java ME为在移动设备和嵌入式设备（笔记手机，PDA，电视机顶盒和打印机）上运行的应用程序提供一个健壮且灵活的环境。** </font>
 
 </br>
 
@@ -32,14 +33,8 @@ oracle上提供的java EE是官方指定的javaEE规范，里面都是符合官�
 
 </br>
 
-<!--<div align=center>-->
 
-![image](F:/markdown/1554217315.png)
-
-<!--</div>-->
-
-
-<!--<img src="/F:/markdown/1554217315.png" width="100" height="100" />-->
+![](/img/in-post/Java/java-01.png)
 
 
 </br>
@@ -59,7 +54,7 @@ java SE是基础，javaEE是基于java SE的基础知识的
 
 ---
 
-![image](F:/markdown/1554218226.png)
+![](/img/in-post/Java/java-02.png)
 
 </br>
 
