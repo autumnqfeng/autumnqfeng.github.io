@@ -5,9 +5,10 @@ subtitle: "JDK、Jre的区别"
 author: "Autu"
 header-style: text
 tags:
-  - Java基础
+  - Java
   - JDK
-  - 知乎
+  - 笔记
+  - 基础
 ---
 
 ### javaME，javaSE和javaEE是什么
