@@ -242,6 +242,9 @@ director.setBuilder(new LowConfigBuilder()); //告诉装机人员电脑配置，
 director.createComputer(); //装机人员开始组装
 Computer computer = director.getComputer(); //从装机人员获取组装好的电脑
 System.out.print("电脑配置：" + computer.toString());  //查看电脑配置
+```
+
+```html
 --------------------------------------
 输出结果：
 电脑配置：Computer{CPU='i5', memory='8G', hardDisk='500G', keyboard='薄膜键盘', mouse='有线鼠标'}
@@ -256,11 +259,15 @@ director.setBuilder(new HighConfigBuider());
 director.createComputer();
 Computer computer = director.getComputer();
 System.out.print("电脑配置：" + computer.toString());
+```
+
+```html
 --------------------------------------
 输出结果：
 电脑配置：Computer{CPU='i7', memory='16G', hardDisk='1T', keyboard='机械键盘', mouse='无线鼠标'}
 --------------------------------------
 ```
+
 
 好了这就是经典的Builder模式，到这里相信你对文章开头Builder模式的定义有了更好的理解。不过在我们日常开发中经典Builder模式一般不常用，用的比较多的还是变种的Builder模式，接下来我们来看下变种的Builder模式。
 
