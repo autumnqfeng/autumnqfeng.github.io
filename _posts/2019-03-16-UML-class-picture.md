@@ -188,10 +188,12 @@ public class Student{
 最后，你会发现你已经不知不觉用UML类图完成上面小学生捡钱的故事：
 
 ![](/img/in-post/UML/UML-10.png)
+<center>
 <small>
 完整类图
 <br>
 ————————
 </small>
+</center>
 
 > 注：本文采用的画图工具为StarUML
