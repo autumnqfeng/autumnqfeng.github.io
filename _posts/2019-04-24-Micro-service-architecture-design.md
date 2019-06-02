@@ -3,7 +3,7 @@ layout: post
 title: "微服务架构设计"
 subtitle: "微服务详解"
 author: "Autu"
-header-img: "img/in-post/Micro-service/post-bg-os-metro.jpg"
+header-img: "img/in-post/Micro-service/post-bg-rwd.jpg"
 header-mask: 0.3
 catalog: true
 tags:
