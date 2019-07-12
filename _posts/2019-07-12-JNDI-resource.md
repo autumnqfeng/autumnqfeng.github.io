@@ -9,9 +9,6 @@ tags:
   - JNDI
 ---
 
-https://blog.csdn.net/cw_hello1/article/details/51669696
-
-https://blog.csdn.net/zhanglf02/article/details/76726702
 
 #### 背景
 在项目开发完成后，在服务器部署时，为了保证数据库连接信息的安全性，我们不能再将数据库配置信息放在properties文件中。因此，我们采用JNDI来将数据库配置信息放入服务器中。
