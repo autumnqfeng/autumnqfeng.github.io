@@ -1,5 +1,4 @@
 ---
-
 layout:     post
 title:      "Spring、Spring MVC、MyBatis 整合文件配置详解"
 subtitle:   "SSM配置"
@@ -9,10 +8,9 @@ header-img: "img/post-bg-js-module.jpg"
 header-mask: 0.3
 catalog:    true
 tags:
-   - Spring
-        - SSM
-            - 配置文件
-
+    - Spring
+    - SSM
+    - 配置文件
 ---
 
 ## web.xml的配置
