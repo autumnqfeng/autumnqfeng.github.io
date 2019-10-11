@@ -2,8 +2,11 @@
 layout: post
 title: "Mybatis运行原理"
 subtitle: "原理分析"
+date:       2019-08-07 12:00:00
 author: "Autu"
-header-style: text
+header-img: "img/post-bg-rwd.jpg"
+header-mask: 0.3
+catalog:    true
 tags:
   - Mybatis
   - 原理
