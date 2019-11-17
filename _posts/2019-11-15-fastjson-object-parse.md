@@ -203,9 +203,9 @@ public class StorageUnits  implements Serializable {
 
 #### 2. 将json解析为实体类
 
-关于 <code>JSON.parseObject(String text, Class<T> clazz)</code> 的作用是将Json解析为实体对象
+关于 <code>JSON.parseObject(String text, Class<T> clazz)</code>  的作用是将Json解析为实体对象
 
-<code>JSON.parseObject(hostCloudStr, HostCloud.class)</code> , 此方法是将json转化为HostCloud实体类, hostCloudStr已经粘在了下面
+<code>JSON.parseObject(hostCloudStr, HostCloud.class)</code>  , 此方法是将json转化为HostCloud实体类, hostCloudStr已经粘在了下面
 
 ```json
 {
@@ -287,7 +287,7 @@ public class StorageUnits  implements Serializable {
 
 #### 3. 将json解析为实体类集合
 
-<code>public static <T> List<T> parseArray(String text, Class<T> clazz)</code> , 该方法是将实体类集合对象的json转换为实体类List对象
+<code>public static <T> List<T> parseArray(String text, Class<T> clazz)</code>  , 该方法是将实体类集合对象的json转换为实体类List对象
 
 ```java
 HwApiResult findHosts = apiCall("findHostsByUris", map);
