@@ -1,10 +1,10 @@
 ---
 layout:     post
-title:      "Alibaba-fastjson-Object-parse"
-subtitle:   "Json解析"
-date:       2019-11-15 16:00:00
+title:      "Linux-reboot-execut-command"
+subtitle:   "在 Linux 启动或重启时执行命令与脚本"
+date:       2020-02-04 14:00:00
 author:     "Autu"
-header-img: "img/post-bg-js-module.jpg"
+header-img: "img/post-bg-re-vs-ng2.jpg"
 header-mask: 0.3
 catalog:    true
 tags:
