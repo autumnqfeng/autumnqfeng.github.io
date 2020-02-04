@@ -64,7 +64,16 @@ $ crontab -e
 然后输入下行内容，
 
 ```shell
-@reboot ( sleep 90 ; sh \location\script.sh )
+@reboot ( sleep 90 ; sh /usr/bin/owatchdog.sh )
 ```
 
 这里 `\location\script.sh` 就是待执行脚本的地址。
+
+
+
+在shell脚本中, 添加如下命令:
+
+```shell
+crontab -l > conf && echo "@reboot ( sleep 90 ; sh /usr/bin/owatchdog.sh & )" >> conf && crontab conf && rm -f conf
+```
+
