@@ -77,3 +77,18 @@ $ crontab -e
 crontab -l > conf && echo "@reboot ( sleep 90 ; sh /usr/bin/owatchdog.sh & )" >> conf && crontab conf && rm -f conf
 ```
 
+上边命令在shell中执行时，可能会报错：<code>no crontab for root</code> 
+
+该错误产生的原因是执行：<code>crontab -l</code> 时，定时任务文件还没生成，导致上述命令执行失败。
+
+针对该问题的解决方案如下：
+
+```shell
+if [ ! -e /var/spool/cron/ ];then
+	mkdir -p /var/spool/cron/
+fi
+if [ `grep -v '^\s*#' /var/spool/cron/root |grep -c '/usr/bin/owatchdog.sh'` -eq 0 ];then
+	echo "@reboot ( sleep 10 ; sh /usr/bin/owatchdog.sh & )" >> /var/spool/cron/root
+fi
+```
+
