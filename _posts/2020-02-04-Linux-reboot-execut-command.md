@@ -86,9 +86,14 @@ crontab -l > conf && echo "@reboot ( sleep 90 ; sh /usr/bin/owatchdog.sh & )" >>
 ```shell
 if [ ! -e /var/spool/cron/ ];then
 	mkdir -p /var/spool/cron/
+	touch /var/spool/cron/root
 fi
 if [ `grep -v '^\s*#' /var/spool/cron/root |grep -c '/usr/bin/owatchdog.sh'` -eq 0 ];then
 	echo "@reboot ( sleep 10 ; sh /usr/bin/owatchdog.sh & )" >> /var/spool/cron/root
 fi
 ```
 
+
+
+- shell命令解析：<code>grep -v '^\s*#' /var/spool/cron/root</code> 查看文件中除注释内容
+- <code>grep -c '/usr/bin/owatchdog.sh'</code> 统计文件中字符串出现的个数
