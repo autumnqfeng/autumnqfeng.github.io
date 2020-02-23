@@ -3,7 +3,7 @@ layout:     post
 title: "js监听鼠标移动，超时返回登录页"
 date:       2020-02-23 13:36:00
 author:     "Autu"
-header-img: "img/post-bg-js-module.jpg"
+header-img: "img/post-bg-nextgen-web-pwa.jpg"
 header-mask: 0.3
 catalog:    true
 tags:
@@ -12,6 +12,33 @@ tags:
   - js
   - 前端
 ---
+
+#### 功能描述与当前现状
+
+- 系统超时时间功能，该功能可  **动态 ** 设置超时时间，超时退出登录
+- 在之前功能中，超时只是设置token过期，后端删除token，前端并未删除
+- 因此超时后若无点击事件产生，系统 **不会退出** 
+
+
+
+#### 解决办法与遇到的问题
+
+##### 问题1 ：超时未退出
+
+- 在前端加入鼠标不移动事件
+- 监听到鼠标不移动，超时后退出登录
+
+##### 问题2 ：频繁请求后端数据库
+
+- 由于超时时间存在数据库，因此需要频繁访问数据库
+- 加入timeOut的cookie，将超时时间存于cookie，定时从cookie中获取超时时间
+
+##### 问题3 ：timeOut消失后超时退出失效
+
+- timeOut可能会被意外删除，或初始化失败
+- 定时获取timeOut时，若在cookie中未发现timeOut则从后端获取一次，放入cookie
+
+
 
 #### js中setCookie、getCookie工具代码
 
@@ -49,12 +76,6 @@ tags:
 
 
 #### 登录超时时间获取
-
-超时时间在页面可动态设置与获取，因此超时时间存在数据库中，当检测到鼠标不移动时间超过超时时间时，清除cookie，并返回登录页。
-
-为了避免频繁获取数据库超时时间就需要将超时时间放入cookie中，定时获取cookie中的超时时间，当发现cookie中timeOut消失则从后端获取，再重新设置timeOut
-
-代码如下：
 
 ```js
     let timeOut;
