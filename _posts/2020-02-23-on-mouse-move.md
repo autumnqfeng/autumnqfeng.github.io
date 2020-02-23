@@ -16,34 +16,34 @@ tags:
 #### js中setCookie、getCookie工具代码
 
 ```js
-		//cname 名字
-		//cvalue 值
-		//exdays 时间            0.01大概25分钟
-		function setCookie(cname, cvalue, exdays) {
-			var d = new Date();
-			d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-			var expires = "expires=" + d.toUTCString();
-            // expires + "; path=/" 这个很重要代表在哪个层级下可以访问cookie
-			document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/";
- 
-		}
- 
-		//获取cookie
-		function getCookie(cname) {
-			var name = cname + "=";
-			var ca = document.cookie.split(';');
-			for(var i = 0; i < ca.length; i++) {
-				var c = ca[i];
-				while(c.charAt(0) == ' ') c = c.substring(1);
-				if(c.indexOf(name) != -1) return c.substring(name.length, c.length);
-			}
-			return "";
-		}
- 
-		//删除 cookie
-		function clearCookie(name) {
-			setCookie(name, "", -1);
-		}
+    //cname 名字
+    //cvalue 值
+    //exdays 时间            0.01大概25分钟
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        // expires + "; path=/" 这个很重要代表在哪个层级下可以访问cookie
+        document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/";
+
+    }
+
+    //获取cookie
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while(c.charAt(0) == ' ') c = c.substring(1);
+            if(c.indexOf(name) != -1) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+
+    //删除 cookie
+    function clearCookie(name) {
+        setCookie(name, "", -1);
+    }
 ```
 
 
