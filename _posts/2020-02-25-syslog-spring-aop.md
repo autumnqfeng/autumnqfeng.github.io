@@ -65,12 +65,16 @@ public class Log implements Serializable {
 
     @Id
     private String id;
-    /** 功能模块 */
-    private String moduleName;
-    /** 操作名称 */
-    private String operateName;
-    /** 操作对象 */
-    private String operateObj;
+    /** 登录用户 */
+    private String username;
+    /** 登录ip */
+    private String loginIp;
+    /** 日志类型 */
+    private int logTypeId;
+    /** 日志级别 */
+    private String level;
+    /** 事件类型 */
+    private String eventType;
     /** 操作详情 */
     private String remark;
     /** 目标方法参数信息 */
@@ -78,25 +82,30 @@ public class Log implements Serializable {
     /** 操作结果(success/fail) */
     private String result;
     /** 日志产生时间 */
-    private String startTime;
-    /** 日志结束时间 */
-    private String endTime;
+    private String time;
     /** 日志产生的时间戳 */
-    private Double timestamp;
+    private Long timestamp;
+    /** 失败原因 */
+    private String failureReasons;
 
     public Log() {
     }
 
-    public Log(String moduleName, String operateName, String operateObj, 
-               String remark, String targetMethodFields, String startTime, 
-               String endTime, Double timestamp) {
-        this.moduleName = moduleName;
-        this.operateName = operateName;
-        this.operateObj = operateObj;
+    public Log(int logTypeId, String eventType, String remark, String time, Long timestamp, String level) {
+        this.logTypeId = logTypeId;
+        this.eventType = eventType;
+        this.remark = remark;
+        this.time = time;
+        this.timestamp = timestamp;
+        this.level = level;
+    }
+
+    public Log(int logTypeId, String eventType, String remark, String targetMethodFields, String time, Long timestamp) {
+        this.logTypeId = logTypeId;
+        this.eventType = eventType;
         this.remark = remark;
         this.targetMethodFields = targetMethodFields;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.time = time;
         this.timestamp = timestamp;
     }
     
@@ -106,102 +115,77 @@ public class Log implements Serializable {
 
 ##### 创建注解
 
-- 创建作用在类上的注解：用来记录操作属于哪个功能模块
+-   创建作用在方法上的注解：记录详细的日志信息
 
   ```java
-  package com.csec.csos.annotation;
-  
-  import org.springframework.data.mongodb.core.mapping.Document;
-  
-  import java.lang.annotation.ElementType;
-  import java.lang.annotation.Retention;
-  import java.lang.annotation.RetentionPolicy;
-  import java.lang.annotation.Target;
-  
-  /**
-   * 日志记录(类注解) 自定义注解
-   * @author: ***
-   * @date: 2020/2/24 16:23
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.TYPE)
-  @Document
-  public @interface LogFunction {
-      // 功能模块名称
-      String moduleName() default "";
-  }
-  
+    package com.csec.csos.annotation;
+    
+    import org.springframework.data.mongodb.core.mapping.Document;
+    
+    import java.lang.annotation.ElementType;
+    import java.lang.annotation.Retention;
+    import java.lang.annotation.RetentionPolicy;
+    import java.lang.annotation.Target;
+    
+    /**
+     * 日志记录(方法注解)
+     * @author: ***
+     * @date: 2020/2/24 17:39
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @Document
+    public @interface LogOperate {
+        // 日志类型id
+        int logTypeId() default 0;
+        // 事件类型
+        String eventType() default "";
+        // 操作详情
+        String remark() default "";
+    }
+    
+    
   ```
 
-- 创建作用在方法上的注解：记录详细的日志信息
-
-  ```java
-  package com.csec.csos.annotation;
   
-  import org.springframework.data.mongodb.core.mapping.Document;
-  
-  import java.lang.annotation.ElementType;
-  import java.lang.annotation.Retention;
-  import java.lang.annotation.RetentionPolicy;
-  import java.lang.annotation.Target;
-  
-  /**
-   * 日志记录(方法注解)
-   * @author: ***
-   * @date: 2020/2/24 17:39
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.METHOD)
-  @Document
-  public @interface LogOperate {
-      // 操作名称
-      String operateName() default "";
-      // 操作对象
-      String operateObj() default "";
-      // 操作详情
-      String remark() default "";
-  }
-  
-  ```
 
 ##### 定义切面类
 
-- 切入点：所有service包下带LogOperate注解的方法。
+###### 获取切入点 目标方法中的参数信息
 
-- 前置通知（@Before）：设置开始时间参数
+```java
+    /**
+     * 获取目标方法中的参数信息
+     * @param joinPoint 切入点对象
+     * @return key: 参数名, value: 参数值
+     */
+    private HashMap<String, Object> getFieldsMsg(JoinPoint joinPoint) {
+        // 获取目标方法参数名
+        Signature signature = joinPoint.getSignature();
+        MethodSignature methodSignature = (MethodSignature) signature;
+        String[] argsName = methodSignature.getParameterNames();
+        // 获取目标方法参数
+        Object[] args = joinPoint.getArgs();
+
+        HashMap<String, Object> map = new HashMap<>(16);
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] != null) {
+                map.put(argsName[i], args[i]);
+            }
+        }
+        return map;
+    }
+```
+
+###### 完整切面类代码
+
+- 切入点：所有service包下带LogOperate注解的方法。
 
 - 环绕通知（@Around）：获取方法返回值
 
 - 后置通知（@After）：对存入日志信息的处理
 
-- 异常通知（@AfterThrowing）：异常处理，并处理日志信息
-
-
 ```java
-package com.csec.csos.aspect;
-
-import com.csec.csos.annotation.LogFunction;
-import com.csec.csos.annotation.LogOperate;
-import com.csec.csos.constant.CodeList;
-import com.csec.csos.entity.Log;
-import com.csec.csos.entity.ResResult;
-import com.csec.csos.util.DateUtil;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.DefaultParameterNameDiscoverer;
-import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 日志切面类
  * @author: ***
@@ -214,34 +198,32 @@ public class LogAspect {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private SysLogUtil sysLogUtil;
 
-    private String startTime;
-    private long timestamp;
-    private HashMap<String, Object> targetMethodFields;
+    /** 操作结果 */
     private String result;
+    /** 日志级别 */
+    private String level;
+    /** 失败原因 */
+    private String failureReasons;
 
     @Pointcut("execution(* com.csec.csos.service.*.*(..)) && @annotation(com.csec.csos.annotation.LogOperate)")
     public void pointCut() {}
 
-    @Before("pointCut()")
-    public void before(JoinPoint joinPoint) {
-        startTime = DateUtil.getDateTime();
-        timestamp = System.currentTimeMillis();
-        try {
-            targetMethodFields = getFieldsMsg(joinPoint);
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            logger.error("切入点处，未匹配到对应的 类或方法");
-        }
-    }
-
+    // 获取方法返回值
     @Around("pointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         if (joinPoint.proceed() instanceof ResResult) {
             ResResult resResult = (ResResult) joinPoint.proceed();
             if (CodeList.SUCCESS == resResult.getCode()) {
                 result = "success";
+                level = SyslogLevel.INFO;
+                failureReasons = "";
             } else {
                 result = "fail";
+                level = SyslogLevel.ERROR;
+                failureReasons = resResult.getMsg();
             }
             return resResult;
         } else {
@@ -251,99 +233,269 @@ public class LogAspect {
 
     @After("pointCut()")
     public void after(JoinPoint joinPoint) {
-        Log logInfo = getLogInfo(joinPoint);
+        Log logInfo = getLogAnnotationInfo(joinPoint);
         logInfo.setResult(result);
+        logInfo.setLevel(level);
+        logInfo.setFailureReasons(failureReasons);
+        // 获取用户登录信息
+        ConcurrentHashMap<String, String> userInfo = sysLogUtil.getUserInfo();
+        logInfo.setUsername(userInfo.get("username"));
+        logInfo.setLoginIp(userInfo.get("realIp"));
         mongoTemplate.insert(logInfo);
     }
 
-    @AfterThrowing("pointCut()")
-    public void exception(JoinPoint joinPoint) {
-        Log logInfo = getLogInfo(joinPoint);
-        logInfo.setResult("fail");
-        mongoTemplate.insert(logInfo);
-    }
-
-    private Log getLogInfo(JoinPoint joinPoint) {
+    /**
+     * 获取注解中信息
+     * @param joinPoint 切入点对象
+     * @return 返回系统操作日志对象
+     */
+    private Log getLogAnnotationInfo(JoinPoint joinPoint) {
+        // 获取日志注解中信息
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         LogOperate annotationOperate = method.getAnnotation(LogOperate.class);
 
-        // 获取类上的注解
-        LogFunction annotationFunction = joinPoint.getTarget().getClass().getAnnotation(LogFunction.class);
-
-        // TODO:部署vfw逻辑待完善
-        String endTime = DateUtil.getDateTime();
-
         // 遍历参数信息
         StringBuilder targetMethodFieldsBuilder = new StringBuilder();
-        for (Map.Entry<String, Object> param : targetMethodFields.entrySet()) {
-            targetMethodFieldsBuilder.append(param.getKey());
-            targetMethodFieldsBuilder.append("=");
-            targetMethodFieldsBuilder.append(param.getValue());
-            targetMethodFieldsBuilder.append("；");
+        Map<String, Object> targetMethodFields = this.getFieldsMsg(joinPoint);
+        if (targetMethodFields != null) {
+            for (Map.Entry<String, Object> param : targetMethodFields.entrySet()) {
+                targetMethodFieldsBuilder.append(param.getKey());
+                targetMethodFieldsBuilder.append("=");
+                targetMethodFieldsBuilder.append(param.getValue());
+                targetMethodFieldsBuilder.append("；");
+            }
         }
-        return new Log(annotationFunction.moduleName(),
-                annotationOperate.operateName(),
-                annotationOperate.operateObj(),
+        return new Log(annotationOperate.logTypeId(),
+                annotationOperate.eventType(),
                 annotationOperate.remark(),
                 targetMethodFieldsBuilder.toString(),
-                startTime,
-                endTime,
-                (double) timestamp);
+                DateUtil.getDateTime(),
+                System.currentTimeMillis());
     }
-
-    /**
-     * Integer.class != int.class
-     */
-    private static HashMap<String, Class> map = new HashMap<String, Class>() {
-        private static final long serialVersionUID = 5633590873251228986L;
-        {
-            put("java.lang.Integer", int.class);
-            put("java.lang.Double", double.class);
-            put("java.lang.Float", float.class);
-            put("java.lang.Long", long.class);
-            put("java.lang.Short", short.class);
-            put("java.lang.Boolean", boolean.class);
-            put("java.lang.Char", char.class);
-            put("java.lang.Byte", byte.class);
-        }
-    };
 
     /**
      * 获取目标方法中的参数信息
+     * @param joinPoint 切入点对象
+     * @return key: 参数名, value: 参数值
      */
-    private HashMap<String, Object> getFieldsMsg(JoinPoint joinPoint) throws 
-        ClassNotFoundException, NoSuchMethodException {
-        
-        String classType = joinPoint.getTarget().getClass().getName();
-        String methodName = joinPoint.getSignature().getName();
+    private HashMap<String, Object> getFieldsMsg(JoinPoint joinPoint) {
+        // 获取目标方法参数名
+        Signature signature = joinPoint.getSignature();
+        MethodSignature methodSignature = (MethodSignature) signature;
+        String[] argsName = methodSignature.getParameterNames();
+        // 获取目标方法参数
         Object[] args = joinPoint.getArgs();
-        Class<?>[] classes = new Class[args.length];
-        for (int k = 0; k < args.length; k++) {
-            if (!args[k].getClass().isPrimitive()) {
-                //获取的是封装类型而不是基础类型
-                String result = args[k].getClass().getName();
-                Class s = map.get(result);
-                classes[k] = s == null ? args[k].getClass() : s;
-            }
-        }
-        // 获取参数名
-        ParameterNameDiscoverer pnd = new DefaultParameterNameDiscoverer();
-        //获取指定的方法，第二个参数可以不传，但是为了防止有重载的现象，还是需要传入参数的类型
-        Method method = Class.forName(classType).getMethod(methodName, classes);
-        String[] parameterNames = pnd.getParameterNames(method);
 
-        // 将参数名，参数值放入map返回
         HashMap<String, Object> map = new HashMap<>(16);
-        for (int k = 0; k < args.length; k++) {
-            assert parameterNames != null;
-            map.put(parameterNames[k], args[k]);
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] != null) {
+                map.put(argsName[i], args[i]);
+            }
         }
         return map;
     }
-}
 
+}
 ```
+
+
+
+##### SysLogUtil中添加公共方法
+
+###### 获取用户登录信息
+
+IP地址在cookie中获取的原因：获取到的ip一直为127.0.0.1，这个ip是前端web代理服务器express的部署地址，因此需要在代理服务器将真实ip放入cookie中传入后端业务代码
+
+- webmain.js中获取真实ip
+
+  ```js
+  function getClientIp(req) {
+          return req.headers['x-forwarded-for'] ||
+          req.connection.remoteAddress ||
+          req.socket.remoteAddress ||
+          req.connection.socket.remoteAddress;
+  }
+  ```
+
+- webmain.js中设置cookie（此处为代理拦截路径）
+
+  ```js
+  // 登录网站
+  app.get('/', function(req, res, next) {
+      res.cookie('realIp',getClientIp(req));
+      debugger;
+      if (!req.cookies.token || req.cookies.token == '0' || req.cookies.token == 'null') {
+          // return res.redirect('/login');
+      } else {
+          return res.redirect('/ce_network/main_page');
+      }
+      next()
+  });
+  ```
+
+- 获取用户ip以及用户名信息
+
+  ```java
+      /**
+       * 获取用户登录信息
+       * @return 用户名、密码
+       */
+      public ConcurrentHashMap<String, String> getUserInfo() {
+          ConcurrentHashMap<String, String> userInfoMap = new ConcurrentHashMap<>(16);
+  
+          //获取request
+          ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+          assert sra != null;
+          HttpServletRequest request = sra.getRequest();
+          // 获取cookie
+          Cookie[] cookies = request.getCookies();
+          for (Cookie cookie : cookies) {
+              //获取用户名
+              if ("token".equals(cookie.getName())) {
+                  UserToken token = mongoTemplate.findOne(Query.query(Criteria.where("token").is(cookie.getValue())), UserToken.class);
+                  String username = token != null ? token.getUsername() : null;
+                  assert username != null;
+                  userInfoMap.put("username", username);
+              }
+              //获取用户真实ip地址
+              if ("realIp".equals(cookie.getName())) {
+                  String decodeIp = URIDecoder.decodeURIComponent(cookie.getValue());
+                  String realIp;
+                  if (decodeIp.contains("::ffff:")) {
+                      realIp = decodeIp.substring(decodeIp.lastIndexOf(":") + 1);
+                  } else if ("::1".equals(decodeIp)) {
+                      realIp = "127.0.0.1";
+                  } else {
+                      realIp = decodeIp;
+                  }
+                  userInfoMap.put("realIp", realIp);
+              }
+          }
+          return userInfoMap;
+      }
+  ```
+
+###### 设置系统日志方法
+
+- 非aop方式的增加系统操作日志，弥补aop的不足
+
+  ```java
+      /**
+       * 设置系统日志
+       * @param logTypeId 日志类型id  SyslogType中类型
+       * @param eventType 事件类型
+       * @param remark 描述信息
+       * @param result 日志结果
+       * @param failureReasons 失败原因
+       * @param level 日志级别
+       */
+      private void setLog(int logTypeId, String eventType, String remark, String result, String failureReasons, String level) {
+          ConcurrentHashMap<String, String> userInfo = getUserInfo();
+          Log logInfo = new Log(logTypeId, eventType, remark, DateUtil.getDateTime(), System.currentTimeMillis(), level);
+          logInfo.setResult(result);
+          logInfo.setFailureReasons(failureReasons);
+          logInfo.setUsername(userInfo.get("username"));
+          logInfo.setLoginIp(userInfo.get("realIp"));
+          mongoTemplate.insert(logInfo);
+      }
+  ```
+
+
+###### SysLogUtil完整代码
+
+```java
+/**
+ * @author: ***
+ * @date: 2020/2/27 18:09
+ */
+@Component
+public class SysLogUtil {
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    /**
+     * 设置通知级别系统日志
+     * @param logTypeId 日志类型id  SyslogType中类型
+     * @param eventType 事件类型
+     * @param remark 描述信息
+     */
+    public void setInfoLog(int logTypeId, String eventType, String remark) {
+        setLog(logTypeId, eventType, remark, "success", "", SyslogLevel.INFO);
+    }
+
+    /**
+     * 设置错误级别日志
+     * @param logTypeId 日志类型id  SyslogType中类型
+     * @param eventType 事件类型
+     * @param remark 描述信息
+     * @param failureReasons 失败原因
+     */
+    public void setErrorLog(int logTypeId, String eventType, String remark, String failureReasons) {
+        setLog(logTypeId, eventType, remark, "fail", failureReasons, SyslogLevel.ERROR);
+    }
+
+    /**
+     * 获取用户登录信息
+     * @return 用户名、密码
+     */
+    public ConcurrentHashMap<String, String> getUserInfo() {
+        ConcurrentHashMap<String, String> userInfoMap = new ConcurrentHashMap<>(16);
+
+        //获取request
+        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        assert sra != null;
+        HttpServletRequest request = sra.getRequest();
+        // 获取cookie
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            //获取用户名
+            if ("token".equals(cookie.getName())) {
+                UserToken token = mongoTemplate.findOne(Query.query(Criteria.where("token").is(cookie.getValue())), UserToken.class);
+                String username = token != null ? token.getUsername() : null;
+                assert username != null;
+                userInfoMap.put("username", username);
+            }
+            //获取用户真实ip地址
+            if ("realIp".equals(cookie.getName())) {
+                String decodeIp = URIDecoder.decodeURIComponent(cookie.getValue());
+                String realIp;
+                if (decodeIp.contains("::ffff:")) {
+                    realIp = decodeIp.substring(decodeIp.lastIndexOf(":") + 1);
+                } else if ("::1".equals(decodeIp)) {
+                    realIp = "127.0.0.1";
+                } else {
+                    realIp = decodeIp;
+                }
+                userInfoMap.put("realIp", realIp);
+            }
+        }
+        return userInfoMap;
+    }
+
+    /**
+     * 设置系统日志
+     * @param logTypeId 日志类型id  SyslogType中类型
+     * @param eventType 事件类型
+     * @param remark 描述信息
+     * @param result 日志结果
+     * @param failureReasons 失败原因
+     * @param level 日志级别
+     */
+    private void setLog(int logTypeId, String eventType, String remark, String result, String failureReasons, String level) {
+        ConcurrentHashMap<String, String> userInfo = getUserInfo();
+        Log logInfo = new Log(logTypeId, eventType, remark, DateUtil.getDateTime(), System.currentTimeMillis(), level);
+        logInfo.setResult(result);
+        logInfo.setFailureReasons(failureReasons);
+        logInfo.setUsername(userInfo.get("username"));
+        logInfo.setLoginIp(userInfo.get("realIp"));
+        mongoTemplate.insert(logInfo);
+    }
+}
+```
+
+
 
 ##### 业务逻辑记录日志
 
@@ -363,7 +515,7 @@ public class SysLogServerServiceImpl implements SysLogServerService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    @LogOperate(operateName = "设置日志服务器地址", operateObj = "云盾", remark  = "添加第三方syslog日志服务器地址")
+    @LogOperate(logTypeId = SyslogType.GLOBA_LCONFIG, eventType = "新增", remark  = "添加第三方syslog日志服务器地址")
     public ResResult setSyslog(String serverIp, String port) {
         String sb = "bash " + "/usr/src/cloudsec/shell/setSyslog.sh " 
             + " " + serverIp + " " + port;
@@ -389,4 +541,4 @@ public class SysLogServerServiceImpl implements SysLogServerService {
 
 #### 重构后页面效果
 
-![img](/img/6-cloud/Csec/syslog/1582627120643.png)
+![img](/img/6-cloud/Csec/syslog/1583239987164.png)
