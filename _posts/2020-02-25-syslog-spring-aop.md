@@ -214,8 +214,13 @@ public class LogAspect {
     // 获取方法返回值
     @Around("pointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        if (joinPoint.proceed() instanceof ResResult) {
-            ResResult resResult = (ResResult) joinPoint.proceed();
+        // 改方式会执行2次切入点方法
+        // if (joinPoint.proceed() instanceof ResResult) {
+        //     ResResult resResult = (ResResult) joinPoint.proceed();
+        // 次方法只能执行一次，若执行多次则切入点方法也将执行同样次数
+        Object proceed = joinPoint.proceed();
+        if (proceed instanceof ResResult) {
+            ResResult resResult = (ResResult) proceed;
             if (CodeList.SUCCESS == resResult.getCode()) {
                 result = "success";
                 level = SyslogLevel.INFO;
