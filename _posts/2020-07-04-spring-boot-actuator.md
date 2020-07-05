@@ -15,7 +15,7 @@ tags:
 
 ## Spring Boot Actuator:健康检查、审计、统计和监控
 
-Spring Boot Actuator可以帮助你监控和管理Spring Boot应用，比如健康检查、审计、统计和HTTP追踪等。所有这些特性可以通过JMX或者HTTP endpoint来获得。
+Spring Boot Actuator可以帮助你监控和管理Spring Boot应用，比如健康检查、审计、统计和HTTP追踪等。所有这些特性可以通过**JMX或者HTTP endpoint来获得**。
 
 Actuator同时还可以与外部应用监控系统整合，比如[Prometheus](https://prometheus.io/), [Graphite](https://graphiteapp.org/), [DataDog](https://www.datadoghq.com/), [Influx](https://www.influxdata.com/), [Wavefront](https://www.wavefront.com/), [New Relic](https://newrelic.com/)等。这些系统提供了非常好的仪表盘、图标、分析和告警等功能，使得你可以通过统一的接口轻松的监控和管理你的应用。
 
