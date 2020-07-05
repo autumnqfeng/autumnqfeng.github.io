@@ -471,7 +471,7 @@ spring.security.user.roles=ACTUATOR_ADMIN
 
 
 
-下一部分：[Spring Boot Metrics监控之Prometheus&Grafana](https://bigjar.github.io/2018/08/19/Spring-Boot-Metrics%E7%9B%91%E6%8E%A7%E4%B9%8BPrometheus-Grafana/)
+下一部分：[Spring Boot Metrics监控之Prometheus&Grafana](<http://autumn200.com/2020/07/05/spring-boot-actuator-metrics/>)
 
 ### 翻译源
 

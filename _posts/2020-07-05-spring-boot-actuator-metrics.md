@@ -248,7 +248,7 @@ Grafana的面板配置过程还是比较繁琐的，如果我们不想自己去�
 
 
 
-阅读第一部分
+阅读第一部分：[Spring Boot Actuator:健康检查、审计、统计和监控](<http://autumn200.com/2020/07/04/spring-boot-actuator/>)。
 
 ### 翻译源
 
